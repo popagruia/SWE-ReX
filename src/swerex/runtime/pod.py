@@ -36,5 +36,13 @@ class PodRuntime(AbstractRuntime):
 
     def run_pod(self, pod_spec):
         self.logger.info("Running pod with spec: %s", pod_spec)
-        # Placeholder for code to run the pod using kubectl or Kubernetes client library
+        # Using kubernetes client to run the pod
+        from kubernetes import client, config
+        config.load_kube_config()
+        v1 = client.CoreV1Api()
+        resp = v1.create_namespaced_pod(
+            body=pod_spec,
+            namespace='default')
+        self.logger.info("Pod created. status='%s'", resp.status.phase)
+        return resp
         pass
